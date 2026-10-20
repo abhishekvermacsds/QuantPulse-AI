@@ -1,0 +1,61 @@
+# Virtual Environment
+.venv/
+env/
+venv/
+ENV/
+
+# Python cache & compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+nosetests.xml
+coverage.xml
+*.cover
+
+# Environment Variables & Secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Data & Model weights (exclude raw/cache, track samples)
+data/raw/
+data/processed/
+*.h5
+*.pt
+*.pth
+*.onnx
+models/saved/
+
+# Logs
+logs/
+*.log
+
+# OS & IDE
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Node / Frontend
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Celery / Redis
+celerybeat-schedule
+celerybeat.pid
+
+# SQLite databases
+*.db
+*.sqlite3
