@@ -17,6 +17,7 @@ DEFAULT_CONFIDENCE_LEVEL_CVAR: float = 0.95
 # Project directory paths
 PROJECT_ROOT: Path = Path(__file__).resolve().parent.parent.parent
 DATA_DIR: Path = PROJECT_ROOT / "data"
+DATA_DIR.mkdir(parents=True, exist_ok=True)
 SAMPLE_DATA_DIR: Path = DATA_DIR / "sample"
 DEFAULT_SAMPLE_CSV: Path = SAMPLE_DATA_DIR / "market_data.csv"
 DEFAULT_HEADLINES_CSV: Path = SAMPLE_DATA_DIR / "financial_headlines.csv"

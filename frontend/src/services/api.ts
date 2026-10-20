@@ -7,10 +7,13 @@ import {
   VolatilityForecast,
 } from "../types";
 
-// Prefer relative '/api' in dev & production to leverage Vite & Nginx reverse proxies,
-// or fallback to configured VITE_API_URL or localhost.
-const rawApiUrl = import.meta.env.VITE_API_URL;
-const API_BASE = rawApiUrl !== undefined && rawApiUrl !== "" ? rawApiUrl : "/api";
+// Resolve API_BASE from VITE_API_URL environment variable or fallback to '/api'
+const rawApiUrl = (import.meta.env.VITE_API_URL || "").trim();
+let API_BASE = "/api";
+if (rawApiUrl) {
+  const cleanUrl = rawApiUrl.replace(/\/+$/, "");
+  API_BASE = cleanUrl.endsWith("/api") ? cleanUrl : `${cleanUrl}/api`;
+}
 
 const DEFAULT_TIMEOUT_MS = 8000;
 

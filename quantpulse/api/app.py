@@ -1,5 +1,6 @@
 """FastAPI application factory for QuantPulse AI."""
 
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -17,18 +18,23 @@ def create_app() -> FastAPI:
         redoc_url="/redoc",
     )
 
-    # CORS configuration allowing local frontend development servers on any port
+    # CORS configuration allowing local frontend servers and cloud deployments (Render, Vercel)
+    cors_env = os.getenv("CORS_ORIGINS", "")
+    extra_origins = [o.strip() for o in cors_env.split(",") if o.strip()]
+
+    origins = [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:5174",
+        "http://127.0.0.1:5174",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ] + extra_origins
+
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=[
-            "http://localhost:5173",
-            "http://127.0.0.1:5173",
-            "http://localhost:5174",
-            "http://127.0.0.1:5174",
-            "http://localhost:3000",
-            "http://127.0.0.1:3000",
-        ],
-        allow_origin_regex=r"^https?://(localhost|127\.0\.0\.1)(:\d+)?$",
+        allow_origins=origins,
+        allow_origin_regex=r"^(https?://(localhost|127\.0\.0\.1)(:\d+)?|https://.*\.onrender\.com|https://.*\.vercel\.app|https://.*\.pages\.dev)$",
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
