@@ -7,13 +7,35 @@ import {
   VolatilityForecast,
 } from "../types";
 
-// Resolve API_BASE from VITE_API_URL environment variable or fallback to '/api'
-const rawApiUrl = (import.meta.env.VITE_API_URL || "").trim();
-let API_BASE = "/api";
-if (rawApiUrl) {
-  const cleanUrl = rawApiUrl.replace(/\/+$/, "");
-  API_BASE = cleanUrl.endsWith("/api") ? cleanUrl : `${cleanUrl}/api`;
+// Resolve API_BASE from VITE_API_URL environment variable, query param, or intelligent fallback
+function resolveApiBase(): string {
+  // 1. Check URL query param (?api=https://...) for live debugging / override
+  if (typeof window !== "undefined" && window.location) {
+    const params = new URLSearchParams(window.location.search);
+    const queryApi = params.get("api");
+    if (queryApi) {
+      const clean = queryApi.trim().replace(/\/+$/, "");
+      return clean.endsWith("/api") ? clean : `${clean}/api`;
+    }
+  }
+
+  // 2. Check build-time VITE_API_URL environment variable
+  const envUrl = (import.meta.env.VITE_API_URL || "").trim();
+  if (envUrl) {
+    const clean = envUrl.replace(/\/+$/, "");
+    return clean.endsWith("/api") ? clean : `${clean}/api`;
+  }
+
+  // 3. Fallback for production deployment on Render (*.onrender.com)
+  if (typeof window !== "undefined" && window.location && window.location.hostname.includes("onrender.com")) {
+    return "https://quantpulse-api.onrender.com/api";
+  }
+
+  // 4. Fallback to local Vite dev server proxy
+  return "/api";
 }
+
+const API_BASE = resolveApiBase();
 
 const DEFAULT_TIMEOUT_MS = 8000;
 
@@ -37,7 +59,7 @@ async function fetchWithTimeout(url: string, options: RequestInit = {}, timeoutM
     }
     if (error instanceof TypeError && error.message.includes("fetch")) {
       throw new Error(
-        `Unable to reach QuantPulse API at ${url}. Ensure the backend is active at http://127.0.0.1:8000.`
+        `Unable to reach QuantPulse API at ${url}. Ensure the backend is active at ${API_BASE}.`
       );
     }
     throw error;
