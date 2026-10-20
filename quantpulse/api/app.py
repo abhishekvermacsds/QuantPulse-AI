@@ -40,6 +40,17 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
+    # Root landing endpoint for browsers & cloud health checks
+    @app.get("/", tags=["System"])
+    def root():
+        return {
+            "name": "QuantPulse AI Engine API",
+            "version": __version__,
+            "status": "healthy",
+            "docs": "/docs",
+            "health": "/api/health",
+        }
+
     # Mount API routes
     app.include_router(health.router, prefix="/api", tags=["System"])
     app.include_router(portfolio.router, prefix="/api", tags=["Portfolio Analytics & Optimization"])

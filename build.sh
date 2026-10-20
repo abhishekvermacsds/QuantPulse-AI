@@ -12,6 +12,7 @@ echo "=== [3/4] Installing application requirements ==="
 pip install -r requirements.txt
 
 echo "=== [4/4] Executing database migrations and seeding initial dataset ==="
+mkdir -p data
 alembic upgrade head
 python -m quantpulse.db.seed
 

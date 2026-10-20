@@ -26,9 +26,9 @@ services:
         value: https://quantpulse-dashboard.onrender.com
 
   # 2. Frontend Analytics Dashboard (React + Vite + TypeScript)
-  - type: static
+  - type: web
     name: quantpulse-dashboard
-    plan: free
+    runtime: static
     region: oregon
     buildCommand: cd frontend && npm install && npm run build
     staticPublishPath: frontend/dist
@@ -41,4 +41,4 @@ services:
         fromService:
           type: web
           name: quantpulse-api
-          property: url
+          envVarKey: RENDER_EXTERNAL_URL
